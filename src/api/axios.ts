@@ -1,10 +1,11 @@
-import axios from "axios";
+import axios, { AxiosError, InternalAxiosRequestConfig } from "axios";
 
-const instance = axios.create({
+const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
 });
 
-instance.interceptors.request.use((config) => {
+// Attach token
+api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
   const token = localStorage.getItem("token");
 
   if (token) {
@@ -15,4 +16,17 @@ instance.interceptors.request.use((config) => {
   return config;
 });
 
-export default instance;
+// Keep response normal — DO NOT change return type
+api.interceptors.response.use(
+  (response) => response,
+  (error: AxiosError) => {
+    if (error.response?.status === 401) {
+      localStorage.removeItem("token");
+      window.location.href = "/login";
+    }
+
+    return Promise.reject(error);
+  }
+);
+
+export default api;
