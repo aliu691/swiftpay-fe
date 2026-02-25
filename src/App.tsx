@@ -5,6 +5,9 @@ import AdminDashboard from "./pages/admin/AdminDashboard";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import { Toaster } from "react-hot-toast";
+import AppLayout from "./components/Layout";
+import RequestReset from "./pages/auth/RequestReset";
+import ResetPassword from "./pages/auth/ResetPassword";
 
 function App() {
   return (
@@ -16,12 +19,17 @@ function App() {
 
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/request-reset" element={<RequestReset />} />
+
+          <Route path="/reset-password" element={<ResetPassword />} />
 
           <Route
             path="/dashboard"
             element={
               <ProtectedRoute>
-                <Dashboard />
+                <AppLayout>
+                  <Dashboard />
+                </AppLayout>
               </ProtectedRoute>
             }
           />

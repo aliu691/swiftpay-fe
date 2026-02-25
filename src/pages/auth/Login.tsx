@@ -110,6 +110,7 @@ export default function Login() {
             </label>
             <button
               type="button"
+              onClick={() => navigate("/request-reset")}
               className="text-sm text-blue-600 font-medium hover:underline"
             >
               Forgot Password?
