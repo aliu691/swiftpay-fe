@@ -77,7 +77,7 @@ export default function RequestReset() {
         <button
           type="button"
           onClick={() => navigate("/login")}
-          className="flex items-center gap-2 text-blue-600 text-sm"
+          className="flex items-center justify-center gap-2 text-blue-600 text-sm font-medium hover:underline w-full mt-2"
         >
           <ArrowLeft size={16} />
           Back to Login

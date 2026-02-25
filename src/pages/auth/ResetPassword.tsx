@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Eye, EyeOff } from "lucide-react";
+import { ArrowLeft, Eye, EyeOff } from "lucide-react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { resetPassword } from "../../api";
 import { toast } from "react-hot-toast";
@@ -97,11 +97,13 @@ export default function ResetPassword() {
         </button>
 
         {/* 🔥 Change Email Button */}
+
         <button
           type="button"
-          onClick={() => navigate("/request-reset")}
-          className="text-blue-600 text-sm"
+          onClick={() => navigate("/login")}
+          className="flex items-center justify-center gap-2 text-blue-600 text-sm font-medium hover:underline w-full mt-2"
         >
+          <ArrowLeft size={16} />
           Change email?
         </button>
       </form>
