@@ -10,7 +10,7 @@ export default function AdminDashboard() {
     });
   }, []);
 
-  if (!data) return <div>Loading...</div>;
+  if (!data) return <div>Loading....</div>;
 
   return (
     <div>
