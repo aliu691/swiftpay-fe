@@ -9,6 +9,7 @@ export const ENDPOINTS = {
   USER: {
     DASHBOARD: "/me/dashboard",
     GROUPS: "/me/groups",
+    ME: "/me",
   },
 
   GROUP: {

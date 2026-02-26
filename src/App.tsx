@@ -5,7 +5,7 @@ import AdminDashboard from "./pages/admin/AdminDashboard";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import { Toaster } from "react-hot-toast";
-import AppLayout from "./components/Layout";
+import AppLayout from "./components/AppLayout";
 import RequestReset from "./pages/auth/RequestReset";
 import ResetPassword from "./pages/auth/ResetPassword";
 

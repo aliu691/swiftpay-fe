@@ -5,8 +5,7 @@ import AuthLayout from "../../components/AuthLayout";
 import { login } from "../../api";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-import { useContext } from "react";
-import { AuthContext } from "../../context/AuthContext";
+import { useAuth } from "../../hooks/useAuth";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -15,7 +14,7 @@ export default function Login() {
 
   const [emailError, setEmailError] = useState("");
   const [loading, setLoading] = useState(false);
-  const { login: loginContext } = useContext(AuthContext);
+  const { login: loginContext } = useAuth();
 
   const navigate = useNavigate();
 
@@ -44,7 +43,7 @@ export default function Login() {
       const result = await login({ email, password });
 
       // 🔥 Use context login
-      loginContext(result.data.accessToken, null);
+      loginContext(result.data.accessToken);
 
       toast.success(result.message);
 

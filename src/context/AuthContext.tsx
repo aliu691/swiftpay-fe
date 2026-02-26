@@ -1,44 +1,101 @@
-import { createContext, useState } from "react";
+import { createContext, useState, useEffect, ReactNode } from "react";
+import { getProfile } from "../api";
+
+export interface AuthUser {
+  id: string;
+  name: string;
+  email: string;
+  role: "admin" | "user";
+}
 
 interface AuthContextType {
-  user: any;
+  user: AuthUser | null;
   token: string | null;
-  login: (token: string, user: any) => void;
+  isAdmin: boolean;
+  loading: boolean;
+  login: (token: string) => void;
   logout: () => void;
 }
 
 export const AuthContext = createContext<AuthContextType>({
   user: null,
   token: null,
+  isAdmin: false,
+  loading: true,
   login: () => {},
   logout: () => {},
 });
 
-export const AuthProvider = ({ children }: any) => {
+interface Props {
+  children: ReactNode;
+}
+
+export const AuthProvider = ({ children }: Props) => {
   const [token, setToken] = useState<string | null>(
     localStorage.getItem("token")
   );
-  const [user, setUser] = useState<any>(
-    JSON.parse(localStorage.getItem("user") || "null")
-  );
 
-  const login = (token: string, user: any) => {
-    localStorage.setItem("token", token);
-    localStorage.setItem("user", JSON.stringify(user));
-    setToken(token);
-    setUser(user);
+  const [user, setUser] = useState<AuthUser | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  /* ===========================
+     FETCH USER PROFILE
+  =========================== */
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      if (!token) {
+        setUser(null);
+        setLoading(false);
+        return;
+      }
+
+      try {
+        setLoading(true);
+
+        const response = await getProfile();
+        setUser(response.data);
+      } catch (error) {
+        // Token invalid → logout
+        logout();
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUser();
+  }, [token]);
+
+  /* ===========================
+     LOGIN
+  =========================== */
+
+  const login = (newToken: string) => {
+    localStorage.setItem("token", newToken);
+    setToken(newToken);
   };
+
+  /* ===========================
+     LOGOUT
+  =========================== */
 
   const logout = () => {
     localStorage.removeItem("token");
-    localStorage.removeItem("user");
-
     setToken(null);
     setUser(null);
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, login, logout }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        token,
+        isAdmin: user?.role === "admin",
+        loading,
+        login,
+        logout,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

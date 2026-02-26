@@ -6,7 +6,7 @@ import { register } from "../../api";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
-import { AuthContext } from "../../context/AuthContext";
+import { useAuth } from "../../hooks/useAuth";
 
 export default function Register() {
   const [name, setName] = useState("");
@@ -16,7 +16,7 @@ export default function Register() {
 
   const [emailError, setEmailError] = useState("");
   const [loading, setLoading] = useState(false);
-  const { login: loginContext } = useContext(AuthContext);
+  const { login: loginContext } = useAuth();
 
   const navigate = useNavigate();
 
@@ -47,7 +47,7 @@ export default function Register() {
 
       const result = await register({ name, email, password });
 
-      loginContext(result.data.accessToken, null);
+      loginContext(result.data.accessToken);
 
       toast.success(result.message);
 
