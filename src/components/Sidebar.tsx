@@ -6,31 +6,38 @@ import {
   LogOut,
 } from "lucide-react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { useContext } from "react";
-import { AuthContext } from "../context/AuthContext";
+import { useAuth } from "../hooks/useAuth";
 import Logo from "./Logo";
 
-export default function Sidebar() {
-  const { logout } = useContext(AuthContext);
+interface Props {
+  onClose?: () => void;
+}
+
+export default function Sidebar({ onClose }: Props) {
+  const { logout } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = () => {
     logout();
+    onClose?.();
     navigate("/login");
   };
 
-  const navItem =
-    "flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-blue-50 hover:text-blue-600 transition";
+  const baseItem =
+    "flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 transition-all duration-200";
+
+  const inactiveItem = "hover:bg-blue-50 hover:text-blue-600";
 
   const activeItem =
     "bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-md";
 
   return (
-    <aside className="w-72 bg-white border-r flex flex-col justify-between p-6">
-      <div>
+    <aside className="w-72 h-screen bg-white border-2 border-gray-200 flex flex-col">
+      {/* Top Section */}
+      <div className="flex-1 flex flex-col p-6 overflow-y-auto">
         {/* Logo */}
         <div className="mb-12">
-          <Logo size="lg" />
+          <Logo size="md" />
           <p className="text-sm text-gray-500 mt-1">Collaborative Savings</p>
         </div>
 
@@ -38,8 +45,9 @@ export default function Sidebar() {
         <nav className="space-y-2">
           <NavLink
             to="/dashboard"
+            onClick={onClose}
             className={({ isActive }) =>
-              `${navItem} ${isActive ? activeItem : ""}`
+              `${baseItem} ${isActive ? activeItem : inactiveItem}`
             }
           >
             <LayoutDashboard size={18} />
@@ -48,8 +56,9 @@ export default function Sidebar() {
 
           <NavLink
             to="/groups"
+            onClick={onClose}
             className={({ isActive }) =>
-              `${navItem} ${isActive ? activeItem : ""}`
+              `${baseItem} ${isActive ? activeItem : inactiveItem}`
             }
           >
             <Users size={18} />
@@ -57,19 +66,10 @@ export default function Sidebar() {
           </NavLink>
 
           <NavLink
-            to="/groups/create"
-            className={({ isActive }) =>
-              `${navItem} ${isActive ? activeItem : ""}`
-            }
-          >
-            <PlusCircle size={18} />
-            Create Group
-          </NavLink>
-
-          <NavLink
             to="/settings"
+            onClick={onClose}
             className={({ isActive }) =>
-              `${navItem} ${isActive ? activeItem : ""}`
+              `${baseItem} ${isActive ? activeItem : inactiveItem}`
             }
           >
             <Settings size={18} />
@@ -78,14 +78,16 @@ export default function Sidebar() {
         </nav>
       </div>
 
-      {/* Logout Button */}
-      <button
-        onClick={handleLogout}
-        className="flex items-center gap-3 px-4 py-3 rounded-xl bg-gray-100 hover:bg-red-50 hover:text-red-600 text-gray-700 transition"
-      >
-        <LogOut size={18} />
-        Logout
-      </button>
+      {/* Bottom Section */}
+      <div className="p-6 border-t-2 border-gray-200">
+        <button
+          onClick={handleLogout}
+          className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-gray-100 hover:bg-red-50 hover:text-red-600 text-gray-700 transition-all duration-200"
+        >
+          <LogOut size={18} />
+          Logout
+        </button>
+      </div>
     </aside>
   );
 }
