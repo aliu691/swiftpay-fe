@@ -11,7 +11,7 @@ export default function Topbar({ onMenuClick }: Props) {
   const initials = user?.name?.charAt(0)?.toUpperCase() ?? "U";
 
   return (
-    <div className="h-20 bg-white border-b px-4 md:px-8 flex items-center justify-between">
+    <div className="h-20 bg-white border-b-2 border-gray-200 px-4 md:px-8 flex items-center justify-between">
       {/* Left Section */}
       <div className="flex items-center gap-4">
         {/* Mobile Menu Button */}

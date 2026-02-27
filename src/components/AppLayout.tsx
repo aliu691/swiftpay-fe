@@ -10,7 +10,7 @@ export default function AppLayout({ children }: Props) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="h-screen flex bg-gray-100 overflow-hidden">
+    <div className="h-screen flex overflow-hidden">
       {/* Desktop Sidebar */}
       <div className="hidden lg:flex">
         <Sidebar />

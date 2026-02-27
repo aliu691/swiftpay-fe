@@ -32,7 +32,7 @@ export default function Sidebar({ onClose }: Props) {
     "bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-md";
 
   return (
-    <aside className="w-72 h-screen bg-white border-r flex flex-col">
+    <aside className="w-72 h-screen bg-white border-2 border-gray-200 flex flex-col">
       {/* Top Section */}
       <div className="flex-1 flex flex-col p-6 overflow-y-auto">
         {/* Logo */}
@@ -66,17 +66,6 @@ export default function Sidebar({ onClose }: Props) {
           </NavLink>
 
           <NavLink
-            to="/groups/create"
-            onClick={onClose}
-            className={({ isActive }) =>
-              `${baseItem} ${isActive ? activeItem : inactiveItem}`
-            }
-          >
-            <PlusCircle size={18} />
-            Create Group
-          </NavLink>
-
-          <NavLink
             to="/settings"
             onClick={onClose}
             className={({ isActive }) =>
@@ -90,7 +79,7 @@ export default function Sidebar({ onClose }: Props) {
       </div>
 
       {/* Bottom Section */}
-      <div className="p-6 border-t">
+      <div className="p-6 border-t-2 border-gray-200">
         <button
           onClick={handleLogout}
           className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-gray-100 hover:bg-red-50 hover:text-red-600 text-gray-700 transition-all duration-200"
