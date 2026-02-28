@@ -8,6 +8,11 @@ import { Toaster } from "react-hot-toast";
 import AppLayout from "./components/AppLayout";
 import RequestReset from "./pages/auth/RequestReset";
 import ResetPassword from "./pages/auth/ResetPassword";
+import MyGroups from "./pages/user/MyGroups";
+import GroupDetails from "./pages/user/GroupDetails";
+import HomeRedirect from "./pages/HomeRedirect";
+import JoinGroup from "./pages/user/JoinGroup";
+import PaymentCallback from "./pages/PaymentCallback";
 
 function App() {
   return (
@@ -15,13 +20,14 @@ function App() {
       <BrowserRouter>
         <Routes>
           {/* ✅ Default Route */}
-          <Route path="/" element={<Navigate to="/login" replace />} />
+          <Route path="/" element={<HomeRedirect />} />
 
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/request-reset" element={<RequestReset />} />
 
           <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/payment/callback" element={<PaymentCallback />} />
 
           <Route
             path="/dashboard"
@@ -30,6 +36,37 @@ function App() {
                 <AppLayout>
                   <Dashboard />
                 </AppLayout>
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/groups"
+            element={
+              <ProtectedRoute>
+                <AppLayout>
+                  <MyGroups />
+                </AppLayout>
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/groups/:id"
+            element={
+              <ProtectedRoute>
+                <AppLayout>
+                  <GroupDetails />
+                </AppLayout>
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/join/:token"
+            element={
+              <ProtectedRoute>
+                <JoinGroup />
               </ProtectedRoute>
             }
           />

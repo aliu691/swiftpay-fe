@@ -20,6 +20,11 @@ export const ENDPOINTS = {
     CONTRIBUTIONS: (id: string) => `/groups/${id}/contributions`,
     PAYOUT: (id: string) => `/groups/${id}/payout`,
     SUMMARY: (id: string) => `/groups/${id}/summary`,
+    PREVIEW: (token: string) => `/groups/invite/${token}`,
+  },
+
+  PAYMENTS: {
+    VERIFY: (reference: string) => `/payments/verify/${reference}`,
   },
 
   ADMIN: {

@@ -1,10 +1,9 @@
-import { FormEvent, useState } from "react";
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Mail, Lock, Eye, EyeOff, ArrowRight, Loader2 } from "lucide-react";
 import AuthLayout from "../../components/AuthLayout";
 import { login } from "../../api";
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 
 export default function Login() {
@@ -14,11 +13,16 @@ export default function Login() {
 
   const [emailError, setEmailError] = useState("");
   const [loading, setLoading] = useState(false);
-  const { login: loginContext } = useAuth();
+  const [loginSuccess, setLoginSuccess] = useState(false);
+
+  const { login: loginContext, user } = useAuth();
 
   const navigate = useNavigate();
+  const location = useLocation();
 
-  // Email validation
+  // Where user was trying to go
+  const from = location.state?.from?.pathname || "/dashboard";
+
   const validateEmail = (value: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -34,7 +38,6 @@ export default function Login() {
 
   const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
-
     if (!isFormValid) return;
 
     try {
@@ -42,12 +45,12 @@ export default function Login() {
 
       const result = await login({ email, password });
 
-      // 🔥 Use context login
       loginContext(result.data.accessToken);
 
       toast.success(result.message);
 
-      navigate("/dashboard");
+      // 🔥 Mark login success — DO NOT navigate yet
+      setLoginSuccess(true);
     } catch (error: any) {
       const message =
         error?.response?.data?.message ?? error?.message ?? "Login failed";
@@ -57,6 +60,16 @@ export default function Login() {
       setLoading(false);
     }
   };
+
+  /* =====================================
+     Redirect AFTER user is restored
+  ===================================== */
+
+  useEffect(() => {
+    if (loginSuccess && user) {
+      navigate(from, { replace: true });
+    }
+  }, [loginSuccess, user, from, navigate]);
 
   return (
     <AuthLayout>
@@ -138,12 +151,6 @@ export default function Login() {
               {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
             </button>
           </div>
-        </div>
-
-        {/* Remember Me */}
-        <div className="flex items-center gap-2">
-          <input type="checkbox" className="w-5 h-5 rounded border-gray-300" />
-          <span className="text-sm text-gray-600">Remember me for 30 days</span>
         </div>
 
         {/* Submit */}

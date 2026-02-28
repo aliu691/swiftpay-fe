@@ -24,6 +24,26 @@ export interface UserDashboardData {
   groupsCreated: number;
 }
 
+export type GroupStatus = "active" | "completed" | "disbursed";
+
+export interface UserGroup {
+  id: string;
+  name: string;
+  targetAmount: number;
+  status: GroupStatus;
+  createdBy: {
+    id: string;
+    name: string;
+  };
+  completedAt?: string;
+  disbursedAt?: string;
+}
+
+export interface UserGroupsResponse {
+  total: number;
+  groups: UserGroup[];
+}
+
 /* ======================
    DASHBOARD
 ====================== */
@@ -44,10 +64,17 @@ export const getUserDashboard = async (params?: {
    GROUPS
 ====================== */
 
-export const getUserGroups = (status?: string) => {
-  return api.get(ENDPOINTS.USER.GROUPS, {
-    params: { status },
-  });
+export const getUserGroups = async (
+  status?: GroupStatus
+): Promise<ApiResponse<UserGroupsResponse>> => {
+  const response = await api.get<ApiResponse<UserGroupsResponse>>(
+    ENDPOINTS.USER.GROUPS,
+    {
+      params: status ? { status: status.toUpperCase() } : undefined,
+    }
+  );
+
+  return response.data;
 };
 
 /* ======================

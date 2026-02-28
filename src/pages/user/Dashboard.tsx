@@ -8,6 +8,7 @@ import {
   RefreshCcw,
   Landmark,
   FolderPlus,
+  X,
 } from "lucide-react";
 import { getUserDashboard } from "../../api";
 import EmptyState from "../../components/dashboard/EmptyState";
@@ -17,27 +18,18 @@ import StatsCardSkeleton from "../../components/dashboard/StatsCardSkeleton";
 import UpgradeCard from "../../components/dashboard/UpgradeCard";
 import { useQuery } from "@tanstack/react-query";
 
-function getCurrentMonthRange() {
-  const now = new Date();
-  const start = new Date(now.getFullYear(), now.getMonth(), 1);
-  const end = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-
-  return {
-    startDate: start.toISOString().split("T")[0],
-    endDate: end.toISOString().split("T")[0],
-  };
-}
-
 export default function Dashboard() {
   const today = new Date().toISOString().split("T")[0];
 
-  // 👇 Applied range (used by query)
-  const [appliedRange, setAppliedRange] = useState(getCurrentMonthRange());
+  const [appliedRange, setAppliedRange] = useState<{
+    startDate?: string;
+    endDate?: string;
+  }>({});
 
-  // 👇 Draft range (used by picker only)
   const [draftRange, setDraftRange] = useState(appliedRange);
-
   const [showPicker, setShowPicker] = useState(false);
+
+  const isFiltered = !!appliedRange.startDate && !!appliedRange.endDate;
 
   const { data, isLoading } = useQuery({
     queryKey: ["user-dashboard", appliedRange],
@@ -54,14 +46,13 @@ export default function Dashboard() {
     totalAttempts > 0 ? Math.round((successful / totalAttempts) * 100) : 0;
 
   const formattedRange = useMemo(() => {
-    if (!appliedRange.startDate || !appliedRange.endDate)
-      return "Current Period";
+    if (!isFiltered) return "All Time";
 
-    const start = new Date(appliedRange.startDate).toLocaleDateString();
-    const end = new Date(appliedRange.endDate).toLocaleDateString();
+    const start = new Date(appliedRange.startDate!).toLocaleDateString();
+    const end = new Date(appliedRange.endDate!).toLocaleDateString();
 
     return `${start} - ${end}`;
-  }, [appliedRange]);
+  }, [appliedRange, isFiltered]);
 
   if (isLoading) {
     return (
@@ -89,19 +80,46 @@ export default function Dashboard() {
           </p>
         </div>
 
-        {/* Date Picker */}
-        <div className="flex items-center gap-4 relative">
+        {/* Date Controls */}
+        <div className="flex items-center gap-3 relative">
+          {/* Date Button */}
           <button
             onClick={() => {
-              setDraftRange(appliedRange); // sync before opening
+              setDraftRange(appliedRange);
               setShowPicker(!showPicker);
             }}
-            className="flex items-center gap-3 bg-white border-2 border-gray-200 px-5 py-3 rounded-2xl shadow-sm hover:shadow-md transition"
+            className={`flex items-center gap-3 px-5 py-3 rounded-2xl shadow-sm transition
+              ${
+                isFiltered
+                  ? "bg-blue-50 border-2 border-blue-500"
+                  : "bg-white border-2 border-gray-200 hover:shadow-md"
+              }`}
           >
             <Calendar size={18} className="text-gray-500" />
-            <span className="text-sm text-gray-500">{formattedRange}</span>
+            <span className="text-sm text-gray-600">{formattedRange}</span>
+
+            {isFiltered && (
+              <span className="ml-2 text-xs bg-blue-600 text-white px-2 py-1 rounded-full">
+                Filtered
+              </span>
+            )}
           </button>
 
+          {/* Clear Filter Button */}
+          {isFiltered && (
+            <button
+              onClick={() => {
+                setAppliedRange({});
+                setDraftRange({});
+              }}
+              className="flex items-center gap-1 text-sm text-gray-500 hover:text-red-500 transition"
+            >
+              <X size={16} />
+              Clear
+            </button>
+          )}
+
+          {/* Picker Dropdown */}
           {showPicker && (
             <div className="absolute top-16 right-0 bg-white border rounded-2xl shadow-xl p-6 w-80 z-50">
               <div className="space-y-4">
@@ -113,13 +131,13 @@ export default function Dashboard() {
                   <input
                     type="date"
                     max={today}
-                    value={draftRange.startDate}
+                    value={draftRange.startDate || ""}
                     onChange={(e) =>
                       setDraftRange((prev) => ({
                         ...prev,
                         startDate: e.target.value,
                         endDate:
-                          prev.endDate < e.target.value
+                          prev.endDate && prev.endDate < e.target.value
                             ? e.target.value
                             : prev.endDate,
                       }))
@@ -137,7 +155,7 @@ export default function Dashboard() {
                     type="date"
                     min={draftRange.startDate}
                     max={today}
-                    value={draftRange.endDate}
+                    value={draftRange.endDate || ""}
                     onChange={(e) =>
                       setDraftRange((prev) => ({
                         ...prev,
@@ -151,9 +169,8 @@ export default function Dashboard() {
                 <div className="flex justify-between pt-4">
                   <button
                     onClick={() => {
-                      const reset = getCurrentMonthRange();
-                      setDraftRange(reset);
-                      setAppliedRange(reset);
+                      setDraftRange({});
+                      setAppliedRange({});
                       setShowPicker(false);
                     }}
                     className="text-sm text-gray-500 hover:text-gray-700"
@@ -163,7 +180,7 @@ export default function Dashboard() {
 
                   <button
                     onClick={() => {
-                      setAppliedRange(draftRange); // 🔥 ONLY NOW query refetches
+                      setAppliedRange(draftRange);
                       setShowPicker(false);
                     }}
                     className="bg-blue-600 text-white px-4 py-2 rounded-xl text-sm font-semibold hover:bg-blue-700 transition"
