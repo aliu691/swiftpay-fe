@@ -40,27 +40,22 @@ export default function GroupDetails() {
   const payoutMutation = useMutation({
     mutationFn: () => payoutGroup(id!),
     onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["group-details", id],
-      });
-
-      queryClient.invalidateQueries({
-        queryKey: ["group-contributions", id],
-      });
+      queryClient.invalidateQueries({ queryKey: ["group-details", id] });
+      queryClient.invalidateQueries({ queryKey: ["group-contributions", id] });
     },
   });
 
   if (detailsLoading || contributionsLoading) {
     return (
-      <div className="space-y-10">
+      <div className="space-y-8 sm:space-y-10 px-4 sm:px-0">
         <GroupHeaderSkeleton />
 
-        <div className="grid lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
           <GroupProgressCardSkeleton />
           <GroupInsightsCardSkeleton />
         </div>
 
-        <div className="grid lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
           <ContributionsTableSkeleton />
           <MembersCardSkeleton />
         </div>
@@ -78,7 +73,7 @@ export default function GroupDetails() {
   const canPayout = isCreator && isComplete && group?.status !== "disbursed";
 
   return (
-    <div className="space-y-10 bg-grey-100">
+    <div className="space-y-8 sm:space-y-10 px-4 sm:px-0">
       <GroupHeader
         group={group}
         showPayout={canPayout}
@@ -86,7 +81,7 @@ export default function GroupDetails() {
         isProcessing={payoutMutation.isPending}
       />
 
-      <div className="grid lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
         <GroupProgressCard
           totalContributed={contributions?.totalContributed ?? 0}
           targetAmount={group?.targetAmount ?? 0}
@@ -100,7 +95,7 @@ export default function GroupDetails() {
         />
       </div>
 
-      <div className="grid lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
         <ContributionsTable
           contributions={contributions?.contributions ?? []}
         />
