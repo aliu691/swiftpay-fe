@@ -73,6 +73,14 @@ export interface CreateGroupResponseData {
   invitedCount: number;
 }
 
+export interface InvitePreviewData {
+  groupName: string;
+  targetAmount: number;
+  totalContributed: number;
+  percentage: number;
+  createdBy: string;
+}
+
 /* ======================
    GROUP ACTIONS
 ====================== */
@@ -108,14 +116,33 @@ export const getGroupContributions = async (
   return response.data;
 };
 
+export const getInvitePreview = async (
+  token: string
+): Promise<ApiResponse<InvitePreviewData>> => {
+  const response = await api.get<ApiResponse<InvitePreviewData>>(
+    ENDPOINTS.GROUP.PREVIEW(token)
+  );
+
+  return response.data;
+};
+
+export const joinGroup = async (token: string): Promise<ApiResponse<any>> => {
+  const response = await api.post<ApiResponse<any>>(
+    ENDPOINTS.GROUP.JOIN(token)
+  );
+
+  return response.data;
+};
+
 export const contribute = async (
   id: string,
   amount: number
-): Promise<ApiResponse<any>> => {
-  const response = await api.post<ApiResponse<any>>(
-    ENDPOINTS.GROUP.CONTRIBUTE(id),
-    { amount }
-  );
+): Promise<ApiResponse<{ authorizationUrl: string; reference: string }>> => {
+  const response = await api.post<
+    ApiResponse<{ authorizationUrl: string; reference: string }>
+  >(ENDPOINTS.GROUP.CONTRIBUTE(id), {
+    amount: String(amount), // backend expects string
+  });
 
   return response.data;
 };
