@@ -39,11 +39,11 @@ export const AuthProvider = ({ children }: Props) => {
   const [loading, setLoading] = useState(true);
 
   /* ===========================
-     FETCH USER PROFILE
+     BOOTSTRAP USER ON LOAD
   =========================== */
 
   useEffect(() => {
-    const fetchUser = async () => {
+    const bootstrap = async () => {
       if (!token) {
         setUser(null);
         setLoading(false);
@@ -51,19 +51,17 @@ export const AuthProvider = ({ children }: Props) => {
       }
 
       try {
-        setLoading(true);
-
         const response = await getProfile();
         setUser(response.data);
       } catch (error) {
-        // Token invalid → logout
-        logout();
+        // Invalid token handled by axios interceptor
+        setUser(null);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchUser();
+    bootstrap();
   }, [token]);
 
   /* ===========================
@@ -83,6 +81,8 @@ export const AuthProvider = ({ children }: Props) => {
     localStorage.removeItem("token");
     setToken(null);
     setUser(null);
+
+    window.location.replace("/login");
   };
 
   return (

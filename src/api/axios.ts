@@ -4,25 +4,37 @@ const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
 });
 
-// Attach token
-api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
-  const token = localStorage.getItem("token");
+/* ===========================
+   REQUEST INTERCEPTOR
+=========================== */
 
-  if (token) {
-    config.headers = config.headers ?? {};
-    config.headers.Authorization = `Bearer ${token}`;
-  }
+api.interceptors.request.use(
+  (config: InternalAxiosRequestConfig) => {
+    const token = localStorage.getItem("token");
 
-  return config;
-});
+    if (token) {
+      config.headers = config.headers ?? {};
+      config.headers.Authorization = `Bearer ${token}`;
+    }
 
-// Keep response normal — DO NOT change return type
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
+/* ===========================
+   RESPONSE INTERCEPTOR
+=========================== */
+
 api.interceptors.response.use(
   (response) => response,
   (error: AxiosError) => {
     if (error.response?.status === 401) {
+      // Remove invalid token
       localStorage.removeItem("token");
-      window.location.href = "/login";
+
+      // Hard redirect to login
+      window.location.replace("/login");
     }
 
     return Promise.reject(error);

@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import GroupCard from "../../components/groups/GroupCard";
 import GroupCardSkeleton from "../../components/groups/GroupCardSkeleton";
 import { ChevronDown } from "lucide-react";
+import CreateGroupModal from "../../components/groups/CreateGroupModal";
 
 export default function MyGroups() {
   const [status, setStatus] = useState<GroupStatus | null>(null);
@@ -25,6 +26,8 @@ export default function MyGroups() {
   const resetFilter = () => {
     setStatus(null);
   };
+
+  const [createOpen, setCreateOpen] = useState(false);
 
   return (
     <div className="space-y-10 relative">
@@ -76,12 +79,12 @@ export default function MyGroups() {
             </button>
           )}
 
-          <Link
-            to="/groups/create"
+          <button
+            onClick={() => setCreateOpen(true)}
             className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-3 rounded-2xl font-semibold hover:from-blue-700 hover:to-blue-800 transition shadow-md"
           >
             + Create New Group
-          </Link>
+          </button>
         </div>
       </div>
 
@@ -116,6 +119,7 @@ export default function MyGroups() {
           </p>
         </div>
       )}
+      {createOpen && <CreateGroupModal onClose={() => setCreateOpen(false)} />}
     </div>
   );
 }

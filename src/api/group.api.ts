@@ -62,14 +62,25 @@ export interface GroupContributionsData {
   contributions: GroupContribution[];
 }
 
+export interface CreateGroupPayload {
+  name: string;
+  targetAmount: number;
+  invitedEmails: string[];
+}
+
+export interface CreateGroupResponseData {
+  groupId: string;
+  invitedCount: number;
+}
+
 /* ======================
    GROUP ACTIONS
 ====================== */
 
 export const createGroup = async (
-  data: any
-): Promise<ApiResponse<GroupDetailsData>> => {
-  const response = await api.post<ApiResponse<GroupDetailsData>>(
+  data: CreateGroupPayload
+): Promise<ApiResponse<CreateGroupResponseData>> => {
+  const response = await api.post<ApiResponse<CreateGroupResponseData>>(
     ENDPOINTS.GROUP.CREATE,
     data
   );

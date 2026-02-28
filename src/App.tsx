@@ -10,6 +10,7 @@ import RequestReset from "./pages/auth/RequestReset";
 import ResetPassword from "./pages/auth/ResetPassword";
 import MyGroups from "./pages/user/MyGroups";
 import GroupDetails from "./pages/user/GroupDetails";
+import HomeRedirect from "./pages/HomeRedirect";
 
 function App() {
   return (
@@ -17,7 +18,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           {/* ✅ Default Route */}
-          <Route path="/" element={<Navigate to="/login" replace />} />
+          <Route path="/" element={<HomeRedirect />} />
 
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
