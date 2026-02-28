@@ -12,6 +12,7 @@ import MyGroups from "./pages/user/MyGroups";
 import GroupDetails from "./pages/user/GroupDetails";
 import HomeRedirect from "./pages/HomeRedirect";
 import JoinGroup from "./pages/user/JoinGroup";
+import PaymentCallback from "./pages/PaymentCallback";
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
           <Route path="/request-reset" element={<RequestReset />} />
 
           <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/payment/callback" element={<PaymentCallback />} />
 
           <Route
             path="/dashboard"

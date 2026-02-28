@@ -23,6 +23,10 @@ export const ENDPOINTS = {
     PREVIEW: (token: string) => `/groups/invite/${token}`,
   },
 
+  PAYMENTS: {
+    VERIFY: (reference: string) => `/payments/verify/${reference}`,
+  },
+
   ADMIN: {
     LEDGER_ENTRIES: "/admin/ledger/entries",
     LEDGER_SUMMARY: "/admin/ledger/summary",

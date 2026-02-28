@@ -1,12 +1,11 @@
 import { ApiResponse } from "../types/api";
 import api from "./axios";
 import { ENDPOINTS } from "./endpoints";
+import { GroupStatus } from "./user.api";
 
 /* ======================
    TYPES
 ====================== */
-
-export type GroupStatus = "active" | "completed" | "disbursed";
 
 export interface GroupMember {
   id: string;

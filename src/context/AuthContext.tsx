@@ -31,7 +31,7 @@ interface Props {
 }
 
 export const AuthProvider = ({ children }: Props) => {
-  const [token, setToken] = useState<string | null>(
+  const [token, setToken] = useState<string | null>(() =>
     localStorage.getItem("token")
   );
 
@@ -54,7 +54,9 @@ export const AuthProvider = ({ children }: Props) => {
         const response = await getProfile();
         setUser(response.data);
       } catch (error) {
-        // Invalid token handled by axios interceptor
+        // Invalid token
+        localStorage.removeItem("token");
+        setToken(null);
         setUser(null);
       } finally {
         setLoading(false);
@@ -71,6 +73,7 @@ export const AuthProvider = ({ children }: Props) => {
   const login = (newToken: string) => {
     localStorage.setItem("token", newToken);
     setToken(newToken);
+    setLoading(true); // 🔥 force hydration re-run
   };
 
   /* ===========================
@@ -81,7 +84,6 @@ export const AuthProvider = ({ children }: Props) => {
     localStorage.removeItem("token");
     setToken(null);
     setUser(null);
-
     window.location.replace("/login");
   };
 
