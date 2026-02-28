@@ -1,0 +1,82 @@
+import { Link } from "react-router-dom";
+import StatusBadge from "../StatusBadge";
+import { useAuth } from "../../hooks/useAuth";
+import { User, Group } from "lucide-react";
+
+interface Props {
+  group: any;
+  showPayout: boolean;
+  onPayout: () => void;
+  isProcessing: boolean;
+}
+
+export default function GroupHeader({
+  group,
+  showPayout,
+  onPayout,
+  isProcessing,
+}: Props) {
+  const { user } = useAuth();
+
+  const isCreator = user?.email === group.createdBy.email;
+
+  const formattedDate = new Date(group.createdAt).toLocaleDateString("en-GB", {
+    month: "short",
+    year: "numeric",
+  });
+  return (
+    <div className="space-y-6">
+      {/* Breadcrumb */}
+      <div className="text-sm text-gray-500 flex items-center gap-2">
+        <Link
+          to="/groups"
+          className="text-blue-600 hover:underline font-medium"
+        >
+          ← Back to My Groups
+        </Link>
+        <span>/</span>
+        <span className="text-gray-700">{group.name}</span>
+      </div>
+
+      {/* Main Header */}
+      <div className="flex items-start gap-6">
+        {/* Icon */}
+        <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center shadow-md">
+          <Group className="text-white" size={32} />
+        </div>
+
+        <div className="flex-1">
+          <div className="flex items-center gap-4">
+            <h1 className="text-4xl font-bold text-gray-900">{group.name}</h1>
+
+            <StatusBadge status={group.status} />
+          </div>
+
+          <div className="flex items-center gap-3 text-gray-500 mt-3">
+            <User size={16} />
+            <span>
+              Created by{" "}
+              <span className="font-medium text-gray-700">
+                {isCreator ? "Me" : group.createdBy.name}
+              </span>
+            </span>
+
+            <span>•</span>
+
+            <span>{formattedDate}</span>
+          </div>
+        </div>
+      </div>
+
+      {showPayout && (
+        <button
+          onClick={onPayout}
+          disabled={isProcessing}
+          className="bg-green-600 text-white px-6 py-3 rounded-2xl font-semibold hover:bg-green-700 transition disabled:opacity-50"
+        >
+          {isProcessing ? "Processing..." : "Payout Group"}
+        </button>
+      )}
+    </div>
+  );
+}

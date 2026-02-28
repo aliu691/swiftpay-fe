@@ -8,6 +8,8 @@ import { Toaster } from "react-hot-toast";
 import AppLayout from "./components/AppLayout";
 import RequestReset from "./pages/auth/RequestReset";
 import ResetPassword from "./pages/auth/ResetPassword";
+import MyGroups from "./pages/user/MyGroups";
+import GroupDetails from "./pages/user/GroupDetails";
 
 function App() {
   return (
@@ -29,6 +31,28 @@ function App() {
               <ProtectedRoute>
                 <AppLayout>
                   <Dashboard />
+                </AppLayout>
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/groups"
+            element={
+              <ProtectedRoute>
+                <AppLayout>
+                  <MyGroups />
+                </AppLayout>
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/groups/:id"
+            element={
+              <ProtectedRoute>
+                <AppLayout>
+                  <GroupDetails />
                 </AppLayout>
               </ProtectedRoute>
             }
