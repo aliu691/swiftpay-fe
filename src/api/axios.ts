@@ -5,12 +5,28 @@ const api = axios.create({
 });
 
 /* ===========================
+   TOKEN HELPER
+=========================== */
+
+const getStoredToken = () => {
+  const localToken = localStorage.getItem("token");
+  if (localToken) return localToken;
+
+  const cookieToken = document.cookie
+    .split("; ")
+    .find((row) => row.startsWith("token="))
+    ?.split("=")[1];
+
+  return cookieToken || null;
+};
+
+/* ===========================
    REQUEST INTERCEPTOR
 =========================== */
 
 api.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
-    const token = localStorage.getItem("token");
+    const token = getStoredToken();
 
     if (token) {
       config.headers = config.headers ?? {};
@@ -30,10 +46,9 @@ api.interceptors.response.use(
   (response) => response,
   (error: AxiosError) => {
     if (error.response?.status === 401) {
-      // Remove invalid token
       localStorage.removeItem("token");
+      document.cookie = "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
 
-      // Hard redirect to login
       window.location.replace("/login");
     }
 
