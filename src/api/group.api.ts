@@ -24,7 +24,8 @@ export type ContributionStatus =
   | "completed"
   | "disbursed"
   | "success"
-  | "initiated";
+  | "initiated"
+  | "failed";
 
 export interface GroupDetailsData {
   id: string;

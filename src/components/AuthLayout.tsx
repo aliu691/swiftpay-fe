@@ -34,8 +34,8 @@ export default function AuthLayout({ children }: Props) {
 
         <div className="relative z-10 bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/20 max-w-md">
           <p className="italic text-sm text-blue-100">
-            "SwiftPay has completely transformed how I manage my international
-            payments."
+            "SwiftPay has completely transformed how I manage my group
+            donations."
           </p>
         </div>
       </div>
