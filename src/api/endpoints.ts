@@ -28,9 +28,19 @@ export const ENDPOINTS = {
   },
 
   ADMIN: {
+    // Ledger
     LEDGER_ENTRIES: "/admin/ledger/entries",
     LEDGER_SUMMARY: "/admin/ledger/summary",
     RECONCILE: "/admin/ledger/reconcile",
     DASHBOARD: "/admin/ledger/dashboard",
+
+    // Payments
+    PAYMENTS: "/admin/payments",
+    PAYMENT_TRENDS: "/admin/payments/trends",
+    PAYMENT_HEALTH: "/admin/payments/health",
+    PAYMENT_FAILURES: "/admin/payments/failures",
+
+    // Simulation
+    FORCE_FAILURE: "/admin/simulate/force-failure",
   },
 };

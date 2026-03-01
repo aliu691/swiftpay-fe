@@ -1,19 +1,19 @@
 import {
   LayoutDashboard,
+  CreditCard,
+  BookOpen,
   Users,
-  PlusCircle,
-  Settings,
   LogOut,
 } from "lucide-react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
-import Logo from "./Logo";
+import Logo from "../components/Logo";
 
 interface Props {
   onClose?: () => void;
 }
 
-export default function Sidebar({ onClose }: Props) {
+export default function AdminSidebar({ onClose }: Props) {
   const { logout } = useAuth();
   const navigate = useNavigate();
 
@@ -38,13 +38,14 @@ export default function Sidebar({ onClose }: Props) {
         {/* Logo */}
         <div className="mb-12">
           <Logo size="md" />
-          <p className="text-sm text-gray-500 mt-1">Collaborative Savings</p>
+          <p className="text-sm text-gray-500 mt-1">Admin Control Panel</p>
         </div>
 
         {/* Navigation */}
         <nav className="space-y-2">
           <NavLink
-            to="/dashboard"
+            to="/admin"
+            end
             onClick={onClose}
             className={({ isActive }) =>
               `${baseItem} ${isActive ? activeItem : inactiveItem}`
@@ -55,14 +56,36 @@ export default function Sidebar({ onClose }: Props) {
           </NavLink>
 
           <NavLink
-            to="/groups"
+            to="/admin/payments"
+            onClick={onClose}
+            className={({ isActive }) =>
+              `${baseItem} ${isActive ? activeItem : inactiveItem}`
+            }
+          >
+            <CreditCard size={18} />
+            Payments
+          </NavLink>
+
+          <NavLink
+            to="/admin/ledger"
+            onClick={onClose}
+            className={({ isActive }) =>
+              `${baseItem} ${isActive ? activeItem : inactiveItem}`
+            }
+          >
+            <BookOpen size={18} />
+            Ledger
+          </NavLink>
+
+          <NavLink
+            to="/admin/users"
             onClick={onClose}
             className={({ isActive }) =>
               `${baseItem} ${isActive ? activeItem : inactiveItem}`
             }
           >
             <Users size={18} />
-            My Groups
+            Users
           </NavLink>
         </nav>
       </div>
@@ -71,7 +94,7 @@ export default function Sidebar({ onClose }: Props) {
       <div className="p-6 border-t-2 border-gray-200">
         <button
           onClick={handleLogout}
-          className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-gray-100 hover:bg-red-50 hover:text-red-600 text-gray-700 transition-all duration-200"
+          className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-gray-100 hover:bg-blue-50 hover:text-blue-600 text-gray-700 transition-all duration-200"
         >
           <LogOut size={18} />
           Logout

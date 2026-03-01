@@ -16,21 +16,23 @@ export default function AnimatedNumber({
   const [display, setDisplay] = useState(0);
 
   useEffect(() => {
-    let start = 0;
-    const increment = value / (duration / 16);
+    let startTime: number | null = null;
 
-    const counter = setInterval(() => {
-      start += increment;
+    const animate = (timestamp: number) => {
+      if (!startTime) startTime = timestamp;
+      const progress = timestamp - startTime;
 
-      if (start >= value) {
-        setDisplay(value);
-        clearInterval(counter);
-      } else {
-        setDisplay(Math.floor(start));
+      const percentage = Math.min(progress / duration, 1);
+      const currentValue = Math.floor(value * percentage);
+
+      setDisplay(currentValue);
+
+      if (percentage < 1) {
+        requestAnimationFrame(animate);
       }
-    }, 16);
+    };
 
-    return () => clearInterval(counter);
+    requestAnimationFrame(animate);
   }, [value, duration]);
 
   return (

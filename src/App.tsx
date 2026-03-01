@@ -13,6 +13,8 @@ import GroupDetails from "./pages/user/GroupDetails";
 import HomeRedirect from "./pages/HomeRedirect";
 import JoinGroup from "./pages/user/JoinGroup";
 import PaymentCallback from "./pages/PaymentCallback";
+import AdminRoute from "./components/AdminRoutes";
+import AdminLayout from "./components/AdminLayout";
 
 function App() {
   return (
@@ -28,6 +30,8 @@ function App() {
 
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/payment/callback" element={<PaymentCallback />} />
+
+          {/* User Protected Routes */}
 
           <Route
             path="/dashboard"
@@ -71,12 +75,16 @@ function App() {
             }
           />
 
+          {/* Admin Protected Routes */}
+
           <Route
             path="/admin"
             element={
-              <ProtectedRoute>
-                <AdminDashboard />
-              </ProtectedRoute>
+              <AdminRoute>
+                <AdminLayout>
+                  <AdminDashboard />
+                </AdminLayout>
+              </AdminRoute>
             }
           />
         </Routes>
