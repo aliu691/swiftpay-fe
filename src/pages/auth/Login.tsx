@@ -49,8 +49,7 @@ export default function Login() {
 
       toast.success(result.message);
 
-      // 🔥 Mark login success — DO NOT navigate yet
-      setLoginSuccess(true);
+      navigate("/", { replace: true });
     } catch (error: any) {
       const message =
         error?.response?.data?.message ?? error?.message ?? "Login failed";

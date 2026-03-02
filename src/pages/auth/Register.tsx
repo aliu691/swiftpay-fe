@@ -5,7 +5,6 @@ import AuthLayout from "../../components/AuthLayout";
 import { register } from "../../api";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-import { useContext } from "react";
 import { useAuth } from "../../hooks/useAuth";
 
 export default function Register() {

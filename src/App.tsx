@@ -13,6 +13,12 @@ import GroupDetails from "./pages/user/GroupDetails";
 import HomeRedirect from "./pages/HomeRedirect";
 import JoinGroup from "./pages/user/JoinGroup";
 import PaymentCallback from "./pages/PaymentCallback";
+import AdminRoute from "./components/AdminRoutes";
+import AdminLayout from "./components/AdminLayout";
+import FailedPaymentsReport from "./pages/admin/FailedPaymentsReports";
+import AdminPaymentsPage from "./pages/admin/AdminPaymentsPage";
+import AdminLedgerPage from "./pages/admin/AdminLedgerPage";
+import AdminLedgerHistoricalPage from "./pages/admin/AdminLedgerHistoricalPage";
 
 function App() {
   return (
@@ -28,6 +34,8 @@ function App() {
 
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/payment/callback" element={<PaymentCallback />} />
+
+          {/* User Protected Routes */}
 
           <Route
             path="/dashboard"
@@ -71,12 +79,60 @@ function App() {
             }
           />
 
+          {/* Admin Protected Routes */}
+
           <Route
             path="/admin"
             element={
-              <ProtectedRoute>
-                <AdminDashboard />
-              </ProtectedRoute>
+              <AdminRoute>
+                <AdminLayout>
+                  <AdminDashboard />
+                </AdminLayout>
+              </AdminRoute>
+            }
+          />
+
+          <Route
+            path="/admin/failed-payments"
+            element={
+              <AdminRoute>
+                <AdminLayout>
+                  <FailedPaymentsReport />
+                </AdminLayout>
+              </AdminRoute>
+            }
+          />
+
+          <Route
+            path="/admin/payments"
+            element={
+              <AdminRoute>
+                <AdminLayout>
+                  <AdminPaymentsPage />
+                </AdminLayout>
+              </AdminRoute>
+            }
+          />
+
+          <Route
+            path="/admin/ledger"
+            element={
+              <AdminRoute>
+                <AdminLayout>
+                  <AdminLedgerPage />
+                </AdminLayout>
+              </AdminRoute>
+            }
+          />
+
+          <Route
+            path="/admin/ledger/all"
+            element={
+              <AdminRoute>
+                <AdminLayout>
+                  <AdminLedgerHistoricalPage />
+                </AdminLayout>
+              </AdminRoute>
             }
           />
         </Routes>
