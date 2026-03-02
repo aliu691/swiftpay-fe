@@ -155,7 +155,7 @@ export default function AdminDashboard() {
       ) : (
         <LatestFailedPaymentsTable
           transactions={failures?.data?.transactions ?? []}
-          onViewAll={() => navigate("/admin/payments?status=failed")}
+          onViewAll={() => navigate("/admin/failed-payments")}
         />
       )}
     </div>

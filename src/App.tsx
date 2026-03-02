@@ -15,6 +15,7 @@ import JoinGroup from "./pages/user/JoinGroup";
 import PaymentCallback from "./pages/PaymentCallback";
 import AdminRoute from "./components/AdminRoutes";
 import AdminLayout from "./components/AdminLayout";
+import FailedPaymentsReport from "./pages/admin/FailedPaymentsReports";
 
 function App() {
   return (
@@ -83,6 +84,17 @@ function App() {
               <AdminRoute>
                 <AdminLayout>
                   <AdminDashboard />
+                </AdminLayout>
+              </AdminRoute>
+            }
+          />
+
+          <Route
+            path="/admin/failed-payments"
+            element={
+              <AdminRoute>
+                <AdminLayout>
+                  <FailedPaymentsReport />
                 </AdminLayout>
               </AdminRoute>
             }
