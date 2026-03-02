@@ -5,7 +5,7 @@ interface Props {
   title: string;
   value: string | number;
   icon?: ReactNode;
-  highlight?: "blue" | "green" | "red";
+  highlight?: "blue" | "green" | "red" | "black";
   badge?: string;
   progress?: number;
   subtitle?: string;
@@ -19,7 +19,7 @@ export default function PerformanceCard({
   title,
   value,
   icon,
-  highlight = "blue",
+  highlight = "black",
   badge,
   progress,
   subtitle,
@@ -37,6 +37,8 @@ export default function PerformanceCard({
       ? "text-green-600"
       : highlight === "red"
       ? "text-red-600"
+      : highlight === "black"
+      ? "text-black-600"
       : "text-blue-600";
 
   const progressColor =

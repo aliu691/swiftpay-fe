@@ -4,7 +4,7 @@ import {
   usePaymentFailures,
   usePaymentHealth,
   usePaymentTrends,
-} from "../../hooks/useAdmin.ts";
+} from "../../hooks/useAdmin";
 
 import DateRangeFilter from "../../components/DateRangeFilter";
 import IncidentCard from "../../components/admin/IncidentAlert";
@@ -76,21 +76,18 @@ export default function AdminDashboard() {
             <PerformanceCard
               title="Total Attempts"
               value={healthData.totalAttempts}
-              highlight="blue"
               icon={<Banknote className="text-blue-600" />}
             />
 
             <PerformanceCard
               title="Successful Payments"
               value={healthData.successful}
-              highlight="green"
               icon={<CheckCircle2 className="text-green-600" />}
             />
 
             <PerformanceCard
               title="Failed Payments"
               value={healthData.failed}
-              highlight="red"
               icon={<AlertCircle className="text-red-600" />}
             />
 
@@ -99,7 +96,6 @@ export default function AdminDashboard() {
               value={healthData.successRate ?? 0}
               suffix="%"
               progress={healthData.successRate ?? 0}
-              subtitle="Threshold: 85% required for SLA"
             />
           </>
         )}

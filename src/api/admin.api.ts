@@ -99,7 +99,7 @@ export type FailureReason =
   | "PSP_TIMEOUT"
   | "OVERFUNDING_BLOCKED";
 
-/* ---------- Ledger Dashboard ---------- */
+/* ---------- Ledger ---------- */
 
 export interface AdminLedgerDashboard {
   filters: {
@@ -113,6 +113,60 @@ export interface AdminLedgerDashboard {
   completedGroups: number;
   disbursedGroups: number;
   successRate: number;
+}
+
+export interface LedgerSummaryResponse {
+  balances: Record<string, number>;
+  totalTransactions: number;
+}
+
+export interface LedgerReconciliationResponse {
+  filters: {
+    startDate: string | null;
+    endDate: string | null;
+  };
+  platformCash: number;
+  totalGroupLiabilities: number;
+  balanced: boolean;
+}
+
+export interface LedgerAccount {
+  id: string;
+  code: string;
+  name: string;
+  type: "asset" | "liability" | "equity" | "income" | "expense";
+  createdAt: string;
+}
+
+export interface LedgerLine {
+  id: string;
+  debit: number;
+  credit: number;
+  account: LedgerAccount;
+}
+
+export interface LedgerEntry {
+  id: string;
+  reference: string;
+  description: string;
+  createdAt: string;
+  lines: LedgerLine[];
+}
+
+export interface LedgerEntriesResponse {
+  meta: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
+  filters: {
+    reference: string | null;
+    accountCode: string | null;
+    startDate: string | null;
+    endDate: string | null;
+  };
+  data: LedgerEntry[];
 }
 
 /* ---------- Simulation ---------- */
@@ -185,7 +239,7 @@ export const getPaymentFailures = async (params?: {
   return response.data;
 };
 
-/* ---------- Ledger Dashboard ---------- */
+/* ---------- Ledger ---------- */
 
 export const getAdminLedgerDashboard = async (params?: {
   startDate?: string;
@@ -193,6 +247,44 @@ export const getAdminLedgerDashboard = async (params?: {
 }): Promise<ApiResponse<AdminLedgerDashboard>> => {
   const response = await api.get<ApiResponse<AdminLedgerDashboard>>(
     ENDPOINTS.ADMIN.DASHBOARD,
+    { params }
+  );
+
+  return response.data;
+};
+
+export const getAdminLedgerSummary = async (): Promise<
+  ApiResponse<LedgerSummaryResponse>
+> => {
+  const response = await api.get<ApiResponse<LedgerSummaryResponse>>(
+    ENDPOINTS.ADMIN.LEDGER_SUMMARY
+  );
+
+  return response.data;
+};
+
+export const getAdminLedgerReconciliation = async (params?: {
+  startDate?: string;
+  endDate?: string;
+}): Promise<ApiResponse<LedgerReconciliationResponse>> => {
+  const response = await api.get<ApiResponse<LedgerReconciliationResponse>>(
+    ENDPOINTS.ADMIN.RECONCILE,
+    { params }
+  );
+
+  return response.data;
+};
+
+export const getAdminLedgerEntries = async (params?: {
+  page?: number;
+  limit?: number;
+  startDate?: string;
+  endDate?: string;
+  reference?: string;
+  accountCode?: string;
+}): Promise<ApiResponse<LedgerEntriesResponse>> => {
+  const response = await api.get<ApiResponse<LedgerEntriesResponse>>(
+    ENDPOINTS.ADMIN.LEDGER_ENTRIES,
     { params }
   );
 

@@ -6,10 +6,13 @@ import {
   getPaymentHealth,
   getPaymentFailures,
   forceNextFailure,
+  getAdminLedgerSummary,
+  getAdminLedgerReconciliation,
+  getAdminLedgerEntries,
 } from "../api/admin.api";
 
 /* ===============================
-   DASHBOARD
+   LEDGER
 ================================ */
 
 export const useAdminDashboard = (params?: {
@@ -19,6 +22,35 @@ export const useAdminDashboard = (params?: {
   useQuery({
     queryKey: ["admin-dashboard", params],
     queryFn: () => getAdminLedgerDashboard(params),
+  });
+
+export const useAdminLedgerSummary = () =>
+  useQuery({
+    queryKey: ["admin-ledger-summary"],
+    queryFn: getAdminLedgerSummary,
+  });
+
+export const useAdminLedgerReconciliation = (params?: {
+  startDate?: string;
+  endDate?: string;
+}) =>
+  useQuery({
+    queryKey: ["admin-ledger-reconcile", params],
+    queryFn: () => getAdminLedgerReconciliation(params),
+  });
+
+export const useAdminLedgerEntries = (params?: {
+  page?: number;
+  limit?: number;
+  startDate?: string;
+  endDate?: string;
+  reference?: string;
+  accountCode?: string;
+}) =>
+  useQuery({
+    queryKey: ["admin-ledger-entries", params],
+    queryFn: () => getAdminLedgerEntries(params),
+    placeholderData: (previousData) => previousData,
   });
 
 /* ===============================

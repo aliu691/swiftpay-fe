@@ -17,6 +17,8 @@ import AdminRoute from "./components/AdminRoutes";
 import AdminLayout from "./components/AdminLayout";
 import FailedPaymentsReport from "./pages/admin/FailedPaymentsReports";
 import AdminPaymentsPage from "./pages/admin/AdminPaymentsPage";
+import AdminLedgerPage from "./pages/admin/AdminLedgerPage";
+import AdminLedgerHistoricalPage from "./pages/admin/AdminLedgerHistoricalPage";
 
 function App() {
   return (
@@ -107,6 +109,28 @@ function App() {
               <AdminRoute>
                 <AdminLayout>
                   <AdminPaymentsPage />
+                </AdminLayout>
+              </AdminRoute>
+            }
+          />
+
+          <Route
+            path="/admin/ledger"
+            element={
+              <AdminRoute>
+                <AdminLayout>
+                  <AdminLedgerPage />
+                </AdminLayout>
+              </AdminRoute>
+            }
+          />
+
+          <Route
+            path="/admin/ledger/all"
+            element={
+              <AdminRoute>
+                <AdminLayout>
+                  <AdminLedgerHistoricalPage />
                 </AdminLayout>
               </AdminRoute>
             }

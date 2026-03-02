@@ -8,7 +8,7 @@ import LatestFailedPaymentsTableSkeleton from "../../components/admin/skeletons/
 import DateRangeFilter from "../../components/DateRangeFilter";
 import CustomDropdown from "../../components/ui/CustomDropdown";
 
-import { usePaymentFailures, useForceFailure } from "../../hooks/useAdmin.ts";
+import { usePaymentFailures, useForceFailure } from "../../hooks/useAdmin";
 import AnimatedNumber from "../../components/dashboard/AnimatedNumber";
 
 export default function FailedPaymentsReport() {
@@ -212,7 +212,11 @@ export default function FailedPaymentsReport() {
           <p className="text-sm text-gray-500 mb-2">Total Failed</p>
 
           <p className="text-4xl font-bold text-gray-900">
-            <AnimatedNumber value={totalFailed} />
+            {isLoading ? (
+              <div className="h-10 w-24 bg-gray-200 rounded animate-pulse" />
+            ) : (
+              <AnimatedNumber value={totalFailed} />
+            )}
           </p>
 
           {isHighVolume && (
