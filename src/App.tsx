@@ -16,6 +16,7 @@ import PaymentCallback from "./pages/PaymentCallback";
 import AdminRoute from "./components/AdminRoutes";
 import AdminLayout from "./components/AdminLayout";
 import FailedPaymentsReport from "./pages/admin/FailedPaymentsReports";
+import AdminPaymentsPage from "./pages/admin/AdminPaymentsPage";
 
 function App() {
   return (
@@ -95,6 +96,17 @@ function App() {
               <AdminRoute>
                 <AdminLayout>
                   <FailedPaymentsReport />
+                </AdminLayout>
+              </AdminRoute>
+            }
+          />
+
+          <Route
+            path="/admin/payments"
+            element={
+              <AdminRoute>
+                <AdminLayout>
+                  <AdminPaymentsPage />
                 </AdminLayout>
               </AdminRoute>
             }

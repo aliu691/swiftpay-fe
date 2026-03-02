@@ -24,9 +24,7 @@ export default function CustomDropdown({
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  /* =============================
-     Close on Outside Click
-  ============================== */
+  /* Close on outside click */
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -44,40 +42,55 @@ export default function CustomDropdown({
   const selected = options.find((opt) => opt.value === value);
 
   return (
-    <div ref={containerRef} className="space-y-2 relative">
+    <div ref={containerRef} className="flex flex-col relative">
       {label && (
-        <label className="text-sm font-medium text-gray-700">{label}</label>
+        <label className="text-sm font-medium text-gray-700 mb-2">
+          {label}
+        </label>
       )}
 
       {/* Trigger */}
       <button
         type="button"
         onClick={() => setOpen((prev) => !prev)}
-        className="w-full h-[52px] flex items-center justify-between px-4 bg-white border border-gray-300 rounded-xl text-sm text-gray-700 shadow-sm hover:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
+        className="w-full h-[52px] flex items-center justify-between px-4
+        bg-white rounded-xl text-sm text-gray-700
+        border border-gray-300 hover:border-gray-400
+        transition-colors duration-150
+        focus:outline-none"
       >
         <span>{selected ? selected.label : placeholder}</span>
 
         <ChevronDown
           size={16}
-          className={`transition-transform ${open ? "rotate-180" : ""}`}
+          className={`transition-transform duration-200 ${
+            open ? "rotate-180" : ""
+          }`}
         />
       </button>
 
       {/* Dropdown */}
       {open && (
-        <div className="absolute top-full mt-2 w-full bg-white rounded-xl shadow-lg border border-gray-200 z-50 overflow-hidden">
+        <div
+          className="absolute left-0 top-[calc(100%+8px)] w-full
+          bg-white rounded-xl shadow-lg
+          border border-gray-200
+          z-50 overflow-hidden"
+        >
           {options.map((opt) => (
             <button
               key={opt.value}
+              type="button"
               onClick={() => {
                 onChange(opt.value);
                 setOpen(false);
               }}
-              className={`block w-full text-left px-4 py-3 text-sm transition
+              className={`block w-full text-left px-4 py-3 text-sm
+                transition-colors duration-150
                 ${
                   value === opt.value
                     ? "bg-blue-50 text-blue-600"
-                    : "hover:bg-gray-100 text-gray-700"
+                    : "text-gray-700 hover:bg-gray-100"
                 }`}
             >
               {opt.label}
