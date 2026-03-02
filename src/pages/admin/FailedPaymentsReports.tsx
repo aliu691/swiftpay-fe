@@ -10,6 +10,7 @@ import CustomDropdown from "../../components/ui/CustomDropdown";
 
 import { usePaymentFailures, useForceFailure } from "../../hooks/useAdmin";
 import AnimatedNumber from "../../components/dashboard/AnimatedNumber";
+import FilterSectionSkeleton from "../../components/admin/skeletons/FilterSectionSkeleton";
 
 export default function FailedPaymentsReport() {
   const navigate = useNavigate();
@@ -138,74 +139,78 @@ export default function FailedPaymentsReport() {
       ============================== */}
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
         {/* Filter Card */}
-        <div className="lg:col-span-3 bg-white rounded-2xl border border-gray-200 p-8 shadow-sm">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-end">
-            {/* DATE RANGE */}
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">
-                Date Range
-              </label>
+        {isLoading ? (
+          <FilterSectionSkeleton />
+        ) : (
+          <div className="lg:col-span-3 bg-white rounded-2xl border border-gray-200 p-8 shadow-sm">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-end">
+              {/* DATE RANGE */}
+              <div className="space-y-2 flex flex-col relative">
+                <label className="text-sm font-medium text-gray-700 mb-2">
+                  Date Range
+                </label>
 
-              <div className="h-[52px]">
-                <DateRangeFilter
-                  appliedRange={draftFilters}
-                  onApply={(range) =>
-                    setDraftFilters((prev) => ({ ...prev, ...range }))
-                  }
-                  onClear={() => setDraftFilters({})}
-                />
+                <div className="h-[52px]">
+                  <DateRangeFilter
+                    appliedRange={draftFilters}
+                    onApply={(range) =>
+                      setDraftFilters((prev) => ({ ...prev, ...range }))
+                    }
+                    onClear={() => setDraftFilters({})}
+                  />
+                </div>
+              </div>
+
+              {/* FAILURE REASON FILTER */}
+              <CustomDropdown
+                label="Failure Reason"
+                value={draftFilters.failureReason}
+                placeholder="All Reasons"
+                onChange={(val) =>
+                  setDraftFilters((prev) => ({
+                    ...prev,
+                    failureReason: val || undefined,
+                  }))
+                }
+                options={[
+                  { label: "All Reasons", value: "" },
+                  { label: "WEBHOOK_TIMEOUT", value: "WEBHOOK_TIMEOUT" },
+                  { label: "BANK_DECLINED", value: "BANK_DECLINED" },
+                  {
+                    label: "FAILED_AUTHORIZATION",
+                    value: "FAILED_AUTHORIZATION",
+                  },
+                  { label: "PSP_TIMEOUT", value: "PSP_TIMEOUT" },
+                  { label: "SIGNATURE_INVALID", value: "SIGNATURE_INVALID" },
+                  {
+                    label: "OVERFUNDING_BLOCKED",
+                    value: "OVERFUNDING_BLOCKED",
+                  },
+                ]}
+              />
+
+              {/* BUTTON GROUP */}
+              <div className="flex items-center gap-4">
+                <button
+                  onClick={handleApplyFilters}
+                  className="h-[52px] flex-1 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl px-6 text-sm font-semibold shadow-md hover:opacity-95 transition"
+                >
+                  Apply Filters
+                </button>
+
+                <button
+                  onClick={() => {
+                    setDraftFilters({});
+                    setAppliedFilters({});
+                  }}
+                  className="h-[52px] px-5 border border-gray-300 rounded-xl text-sm font-medium text-gray-600 hover:bg-gray-50 transition"
+                >
+                  Reset
+                </button>
               </div>
             </div>
-
-            {/* FAILURE REASON FILTER */}
-            <CustomDropdown
-              label="Failure Reason"
-              value={draftFilters.failureReason}
-              placeholder="All Reasons"
-              onChange={(val) =>
-                setDraftFilters((prev) => ({
-                  ...prev,
-                  failureReason: val || undefined,
-                }))
-              }
-              options={[
-                { label: "All Reasons", value: "" },
-                { label: "WEBHOOK_TIMEOUT", value: "WEBHOOK_TIMEOUT" },
-                { label: "BANK_DECLINED", value: "BANK_DECLINED" },
-                {
-                  label: "FAILED_AUTHORIZATION",
-                  value: "FAILED_AUTHORIZATION",
-                },
-                { label: "PSP_TIMEOUT", value: "PSP_TIMEOUT" },
-                { label: "SIGNATURE_INVALID", value: "SIGNATURE_INVALID" },
-                {
-                  label: "OVERFUNDING_BLOCKED",
-                  value: "OVERFUNDING_BLOCKED",
-                },
-              ]}
-            />
-
-            {/* BUTTON GROUP */}
-            <div className="flex items-center gap-4">
-              <button
-                onClick={handleApplyFilters}
-                className="h-[52px] flex-1 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl px-6 text-sm font-semibold shadow-md hover:opacity-95 transition"
-              >
-                Apply Filters
-              </button>
-
-              <button
-                onClick={() => {
-                  setDraftFilters({});
-                  setAppliedFilters({});
-                }}
-                className="h-[52px] px-5 border border-gray-300 rounded-xl text-sm font-medium text-gray-600 hover:bg-gray-50 transition"
-              >
-                Reset
-              </button>
-            </div>
           </div>
-        </div>
+        )}
 
         {/* TOTAL FAILED CARD */}
         <div className="bg-white rounded-2xl border-l-4 border-red-500 p-8 shadow-sm">

@@ -1,23 +1,14 @@
 import { Info } from "lucide-react";
-import { useAdminLedgerSummary } from "../../hooks/useAdmin";
 
-export default function LedgerBalancesCard() {
-  const { data, isLoading } = useAdminLedgerSummary();
-  const balances = data?.data?.balances;
+interface Props {
+  balances: Record<string, number>;
+}
 
-  if (isLoading || !balances) {
-    return (
-      <div className="bg-white rounded-3xl border border-gray-200 shadow-sm p-8">
-        <p className="text-gray-400">Loading balances...</p>
-      </div>
-    );
-  }
-
+export default function LedgerBalancesCard({ balances }: Props) {
   const entries = Object.entries(balances);
 
   return (
     <div className="bg-white rounded-3xl border border-gray-200 shadow-sm overflow-hidden">
-      {/* Header */}
       <div className="flex justify-between items-center px-8 py-6 border-b border-gray-100">
         <h2 className="text-lg font-semibold text-gray-800">
           Summary of Balances
@@ -25,7 +16,6 @@ export default function LedgerBalancesCard() {
         <Info size={18} className="text-gray-400" />
       </div>
 
-      {/* Body */}
       <div className="p-6 space-y-4">
         {entries.map(([code, amount]) => {
           const isPrimary = code === "PLATFORM_CASH";
@@ -44,7 +34,6 @@ export default function LedgerBalancesCard() {
               `}
             >
               <div className="flex items-center gap-4">
-                {/* Vertical Indicator Bar */}
                 <div
                   className={`w-2 h-10 rounded-full ${
                     isPrimary ? "bg-blue-600" : "bg-gray-200"
@@ -52,7 +41,7 @@ export default function LedgerBalancesCard() {
                 />
 
                 <div>
-                  {code === "PLATFORM_CASH" ? (
+                  {isPrimary ? (
                     <>
                       <p className="font-medium text-gray-800">Platform Cash</p>
                       <p className="text-xs text-gray-400 uppercase tracking-wide">

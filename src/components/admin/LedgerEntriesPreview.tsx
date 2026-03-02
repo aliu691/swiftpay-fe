@@ -1,15 +1,12 @@
 import { useNavigate } from "react-router-dom";
-import { useAdminLedgerEntries } from "../../hooks/useAdmin";
+import { LedgerEntry } from "../../api";
 
-export default function LedgerEntriesPreview() {
+interface Props {
+  entries: LedgerEntry[];
+}
+
+export default function LedgerEntriesPreview({ entries }: Props) {
   const navigate = useNavigate();
-
-  const { data, isLoading } = useAdminLedgerEntries({
-    page: 1,
-    limit: 5,
-  });
-
-  const entries = data?.data?.data ?? [];
 
   return (
     <div className="bg-white rounded-3xl border border-gray-200 shadow-sm overflow-hidden">
@@ -43,38 +40,28 @@ export default function LedgerEntriesPreview() {
         </thead>
 
         <tbody className="divide-y divide-gray-100">
-          {isLoading ? (
-            <tr>
-              <td colSpan={5} className="py-16 text-center text-gray-400">
-                Loading entries...
-              </td>
-            </tr>
-          ) : (
-            entries.flatMap((entry) =>
-              entry.lines.map((line) => (
-                <tr key={line.id} className="hover:bg-gray-50">
-                  <td className="px-8 py-5 text-gray-500">
-                    {new Date(entry.createdAt).toLocaleDateString()}
-                  </td>
+          {entries.flatMap((entry) =>
+            entry.lines.map((line) => (
+              <tr key={line.id} className="hover:bg-gray-50">
+                <td className="px-8 py-5 text-gray-500">
+                  {new Date(entry.createdAt).toLocaleDateString()}
+                </td>
 
-                  <td className="px-8 py-5 text-gray-700">
-                    {entry.description}
-                  </td>
+                <td className="px-8 py-5 text-gray-700">{entry.description}</td>
 
-                  <td className="px-8 py-5 text-gray-500 font-medium">
-                    {line.account.code}
-                  </td>
+                <td className="px-8 py-5 text-gray-500 font-medium">
+                  {line.account.code}
+                </td>
 
-                  <td className="px-8 py-5 text-right text-red-600 font-medium">
-                    {line.debit > 0 ? `₦${line.debit.toLocaleString()}` : "-"}
-                  </td>
+                <td className="px-8 py-5 text-right text-red-600 font-medium">
+                  {line.debit > 0 ? `₦${line.debit.toLocaleString()}` : "-"}
+                </td>
 
-                  <td className="px-8 py-5 text-right text-green-600 font-medium">
-                    {line.credit > 0 ? `₦${line.credit.toLocaleString()}` : "-"}
-                  </td>
-                </tr>
-              ))
-            )
+                <td className="px-8 py-5 text-right text-green-600 font-medium">
+                  {line.credit > 0 ? `₦${line.credit.toLocaleString()}` : "-"}
+                </td>
+              </tr>
+            ))
           )}
         </tbody>
       </table>

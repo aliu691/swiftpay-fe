@@ -1,5 +1,12 @@
 import { useState } from "react";
-import { useAdminDashboard } from "../../hooks/useAdmin";
+import { useQueryClient } from "@tanstack/react-query";
+import {
+  useAdminDashboard,
+  useAdminLedgerSummary,
+  useAdminLedgerReconciliation,
+  useAdminLedgerEntries,
+} from "../../hooks/useAdmin";
+
 import DateRangeFilter from "../../components/DateRangeFilter";
 
 import LedgerSummary from "../../components/admin/LedgerSummary";
@@ -15,13 +22,65 @@ import LedgerEntriesPreview from "../../components/admin/LedgerEntriesPreview";
 import LedgerEntriesPreviewSkeleton from "../../components/admin/skeletons/LedgerEntriesPreviewSkeleton";
 
 export default function AdminLedgerPage() {
+  const queryClient = useQueryClient();
+
   const [range, setRange] = useState<{
     startDate?: string;
     endDate?: string;
   }>({});
 
-  const { data: ledger, isLoading } = useAdminDashboard(range);
-  const ledgerData = ledger?.data;
+  /* =============================
+     FETCH DATA
+  ============================== */
+
+  const { data: dashboard, isLoading: dashboardLoading } =
+    useAdminDashboard(range);
+
+  const { data: summary, isLoading: summaryLoading } = useAdminLedgerSummary();
+
+  const {
+    data: reconciliation,
+    isLoading: reconciliationLoading,
+    isFetching: reconciliationFetching,
+    refetch: refetchReconciliation,
+  } = useAdminLedgerReconciliation(range);
+
+  const { data: entriesData, isLoading: entriesLoading } =
+    useAdminLedgerEntries({
+      page: 1,
+      limit: 5,
+    });
+
+  /* =============================
+     DERIVED DATA
+  ============================== */
+
+  const ledgerData = dashboard?.data;
+  const balances = summary?.data?.balances ?? {};
+  const entries = entriesData?.data?.data ?? [];
+
+  const reconciliationResult = reconciliation?.data;
+
+  /* =============================
+     HANDLE MANUAL RECONCILIATION
+  ============================== */
+
+  const handleReconcile = async () => {
+    await refetchReconciliation();
+
+    // Invalidate anything that may have changed
+    queryClient.invalidateQueries({ queryKey: ["admin-ledger-summary"] });
+    queryClient.invalidateQueries({ queryKey: ["admin-dashboard"] });
+  };
+
+  /* =============================
+     LOADING FLAGS
+  ============================== */
+
+  const summarySectionLoading = dashboardLoading || !ledgerData;
+  const balancesSectionLoading = summaryLoading;
+  const reconciliationSectionLoading =
+    reconciliationLoading && !reconciliationResult;
 
   return (
     <div className="space-y-10">
@@ -48,7 +107,7 @@ export default function AdminLedgerPage() {
       {/* =============================
          LEDGER SUMMARY
       ============================== */}
-      {isLoading || !ledgerData ? (
+      {summarySectionLoading ? (
         <LedgerSummarySkeleton />
       ) : (
         <LedgerSummary
@@ -67,26 +126,35 @@ export default function AdminLedgerPage() {
          BALANCES + RECONCILIATION
       ============================== */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {isLoading ? (
-          <>
-            <LedgerBalancesSkeleton />
-            <LedgerReconciliationSkeleton />
-          </>
+        {balancesSectionLoading ? (
+          <LedgerBalancesSkeleton />
         ) : (
-          <>
-            <LedgerBalancesCard />
-            <LedgerReconciliationCard
-              startDate={range.startDate}
-              endDate={range.endDate}
-            />
-          </>
+          <LedgerBalancesCard balances={balances} />
+        )}
+
+        {reconciliationSectionLoading ? (
+          <LedgerReconciliationSkeleton />
+        ) : (
+          <LedgerReconciliationCard
+            balanced={reconciliationResult?.balanced ?? false}
+            platformCash={reconciliationResult?.platformCash ?? 0}
+            totalGroupLiabilities={
+              reconciliationResult?.totalGroupLiabilities ?? 0
+            }
+            onRefetch={handleReconcile}
+            loading={reconciliationFetching}
+          />
         )}
       </div>
 
       {/* =============================
          ENTRIES PREVIEW
       ============================== */}
-      {isLoading ? <LedgerEntriesPreviewSkeleton /> : <LedgerEntriesPreview />}
+      {entriesLoading ? (
+        <LedgerEntriesPreviewSkeleton />
+      ) : (
+        <LedgerEntriesPreview entries={entries} />
+      )}
     </div>
   );
 }
