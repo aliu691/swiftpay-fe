@@ -49,7 +49,8 @@ export default function Login() {
 
       toast.success(result.message);
 
-      navigate("/", { replace: true });
+      // 🔥 Redirect back to intended page (like /join/123)
+      navigate(from, { replace: true });
     } catch (error: any) {
       const message =
         error?.response?.data?.message ?? error?.message ?? "Login failed";
